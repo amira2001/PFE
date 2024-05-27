@@ -1,0 +1,795 @@
+<!doctype html>
+<html>
+	<head>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+        <style>
+        body{
+            margin:0px;
+            padding: 0px;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .grid-container {
+        overflow-x: hidden !important;
+        display: grid;
+        grid-template-columns:220px 1fr;
+        grid-template-rows: 50px 1fr 50px;
+        grid-template-areas:
+            "sidenav header"
+            "sidenav main"
+            "sidenav footer";
+        height: 200vh; 
+        }
+
+        .header {
+        grid-area: header;
+        background-color:white;
+        }
+
+        .sidenav {
+        width: 130%;
+        grid-area: sidenav;
+        color: white;
+        height: 100%;
+        position: fixed;
+        background: linear-gradient(to bottom, white, #ee9d9d);
+        }
+
+        /* Cards */
+        .main {
+        margin-left: 67px;
+        padding:20px;
+        grid-area: main;
+        background-color: #f8f8f8;
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        grid-template-rows: 300px 300px;
+        grid-template-rows: 220px 35px 258px 200px 170px 240px 488px;
+        grid-gap:20px;
+        position:relative;
+        }
+
+        #card1 {
+        grid-column-start: 1;
+        grid-column-end: 2;
+        }
+
+        #card2 {
+        grid-column-start: 2;
+        grid-column-end: 3;
+        
+        grid-row-start: 1;
+        grid-row-end: 3;
+        }
+
+        #card3 {
+        grid-row-start: 2;
+        grid-row-end: 5;
+        }
+
+        #card4 {
+        grid-row-start: 3;
+        grid-row-end: 5;
+        }
+        #card5 {
+        grid-row-start: 5;
+        grid-row-end: 7;
+        }
+        #card6 {
+        grid-row-start: 5;
+        grid-row-end: 7;
+        }
+        #card7 {
+        grid-row-start: 7;
+        grid-row-end: 8;
+        }
+        #card8 {
+        grid-row-start: 7;
+        grid-row-end: 8;
+        }
+        .card-content{
+            padding: 30px;
+        }
+
+        .card-header{
+            background-color:#f0f0f0;
+            height: 40px;
+            border-radius: 5px 5px 0 0;
+            
+        }
+
+        .card-header p{
+            margin: 0px;
+            padding:0px;
+            position:relative;
+            top:12px;
+            left:12px;
+            color:black;
+            font-weight: bold;
+            font-size: larger;
+        }
+        .card {
+        border-radius: 5px;
+        background-color:white;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+        transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+        }
+
+        .card:hover{
+        box-shadow: 0 2px 4px rgba(0,0,0,0.25), 0 2px 2px rgba(0,0,0,0.22);
+        }
+
+
+        /* Big Numbers */
+
+        #cardTable {
+            padding: 10px;
+            display:grid;
+            grid-template-columns: repeat(5, 1fr);	
+            grid-gap:20px;
+
+        }
+
+
+        .bigNumber{
+            //border: 1px solid black;
+            border-radius: 10px;
+            height:120px;
+            width:380px;
+            margin-left: 8px;
+            margin-top : 20px;
+            //background-color:#3e95cd;
+            box-shadow: 0 3px 3px rgba(0,0,0,0.2), 0 1px 2px rgba(0,0,0,0.6);
+        }
+
+        .bigNumber .regionLabel{
+            margin-top:20px;
+            margin-bottom:0px;
+            text-align:center;
+            color:white;
+            font-size: 13pt;
+            font-family: Consolas, Helvetica, sans-serif;	
+        }
+
+        .bigNumber .regionPop{
+            margin:0px;
+            text-align:center;
+            color:white;
+            font-family: Calibri, Helvetica, sans-serif;
+            font-size: 21pt;
+        }
+
+        #region1{
+            background-color:#8f6d13;
+        }
+
+        #region2{
+            background-color:#ebd088;
+        }
+
+
+        /* Etape 10 */
+
+        #menu{
+            margin-top:60px;
+            display: flex;
+            flex-direction: column;	
+            max-width: 300px !important;
+        }
+
+
+        #menu div{
+            border-bottom:1px solid rgb(231, 224, 224);
+            background-color:white;;
+            //height:40px;
+            //padding:0px;
+            //margin-bottom:1px;
+            box-shadow: 0 3px 3px rgba(0,0,0,0.2), 0 1px 2px rgba(0,0,0,0.6);
+            transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+        }
+
+        #menu div:hover{
+        opacity:95%;
+        box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+        cursor: pointer;
+        background-color:#830606;
+        }
+
+        #menu div p{	
+            background-color:#df2b2b;
+            font-family:'Times New Roman', Times, serif;
+            padding:9px;
+            //margin: 0px;
+            margin-top:0px;
+            margin-bottom:0px;
+            margin-left:8px;
+            color: white;
+            font-size:16pt;
+        }
+
+        #logo{
+            display:flex;
+            }
+
+        #logo *{
+            padding:5px;
+        }
+
+        #logo p{
+            color:#bb0b0b;
+            font-weight:bold;
+            font-size:16pt;
+            padding:5px 0 0 90px;
+            margin:12px 0 0 10px;
+        }
+
+        #dash-title{
+            margin:0px;
+            color:#df2b2b;
+            position: relative;
+            top:15px;
+            left:84px;
+            font-size: 13pt;
+        }
+
+
+        button{
+            height:32px; 
+            cursor:pointer;				
+            border:0px; 
+            color:white;
+            font-weight: bold; 
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+            transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+            font-size: 11pt;
+            
+        }
+
+
+        button:hover{
+            opacity:95%;
+        box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+        }	
+
+        button:active{
+            opacity:70%;
+            box-shadow: 2px 3px 6px 1px rgba(0,0,0,0.3);
+            background-color:#648ca6
+        }	
+
+        #btn_refresh{
+            background-color:#df2b2b;
+            position:absolute;
+            top:8px;
+            right:20px;
+            width:100px;
+        }
+        img{
+            width:182px;
+        }
+        a{
+            text-decoration: none;
+        }
+
+
+        </style>
+        {% load static %}
+    </head>
+	<body>
+		<div class="grid-container">
+		  <header class="header">
+			<p id="dash-title">
+				Dashboard Big Data v 1.0.0 2021
+			</p>
+			<button id="btn_refresh" onclick="loadData()">
+				DJEZZY
+			</button>
+		  </header>
+		  <aside class="sidenav">		
+			<div id="logo">
+                <img src="{% static 'images/logo.png' %}">
+				
+			</div>			
+			<div id="menu">
+				<div><a href="{% url 'Dashboard' %}"><p>Analyse exploratoire</p></a></div>
+				<div><a href="{% url 'analyseChurn' %}"><p>Analyse de churn</p></a></div>
+				<div><a href="{% url 'logout' %}"><p>Déconnexion</p></a></div>
+			</div>		
+		  </aside>
+		  <main class="main">
+			<div class="card" id="card1">	
+				<div class="card-header">
+					<p>Statistique de churn </p>
+				</div>
+				<div class="card-content" id="cardTable">	
+					<div class="bigNumber" id="region1">
+						<p class="regionLabel">{{ churn_yes}}% </p>
+						<p class="regionPop">{{ client_yes}} Clients churn</p>
+					</div>
+					<div class="bigNumber" id="region2">
+						<p class="regionLabel">{{ churn_no }}%</p>
+						<p class="regionPop">{{ client_no }} Clients non churn</p>
+					</div>
+					
+				</div>
+			</div>
+			<div class="card" id="card2">	
+				<div class="card-header">
+					<p>Statistique de churn par profil</p>
+				</div>
+				<div class="card-content">	
+					<canvas id="myChart"></canvas>
+				</div>				
+			</div>
+			<div class="card" id="card3">	
+				<div class="card-header">
+					<p>Statistique de churn par Appareil</p>
+				</div>
+				<div class="card-content" >
+					<canvas id="bar_chart_apareil" height="300" width="800"></canvas>
+				</div>
+			</div>
+			<div class="card" id="card4">		
+				<div class="card-header">
+					<p>Statistique de churn par type de produit</p>
+				</div>
+				<div class="card-content" >
+					<canvas id="pie-chart" height="210" width="400"></canvas>	
+				</div>
+			</div>
+            
+            <div class="card" id="card5">	
+				<div class="card-header">
+					<p>Statistique de churn par le canal</p>
+				</div>
+				<div class="card-content" >
+					<canvas id="channel_bar" height="300" width="800"></canvas>
+				</div>
+			</div>
+            <div class="card" id="card6">	
+				<div class="card-header">
+					<p>Statistique de churn par type de contrat </p>
+				</div>
+				<div class="card-content" style="padding-left: 80px;">	
+					<canvas id="doughnut_chart"></canvas>
+				</div>				
+			</div>
+            <div class="card" id="card7">	
+				<div class="card-header">
+					<p>Statistique de churn par niveau de revenu</p>
+				</div>
+				<div class="card-content" >	
+					<canvas id="income_level_chart"></canvas>
+				</div>				
+			</div>
+            <div class="card" id="card8">		
+				<div class="card-header">
+					<p>Statistique de churn par le genre</p>
+				</div>
+				<div class="card-content" >
+					<canvas id="gender_pie_chart" style="height: 140px;width: 100%;"></canvas>	
+				</div>
+			</div>
+		  </main>
+		  <footer class="footer"></footer>
+		</div>
+		
+		
+		
+		<!--
+		<div style="height: 300px; width: 300px; border:1px solid red; display:inline; float:left">
+			<div style="height: 100%; width: 100%; border:1px solid black">
+				<canvas id="bar-chart" width="300" height="300"></canvas>
+			</div>			
+		</div>
+		<div style="height: 300px; width: 300px; border:1px solid red; display:inline; float:left">
+			<div style="height: 100%; width: 100%; border:1px solid black">
+				<canvas id="line-chart" width="300" height="300"></canvas>
+			</div>			
+		</div>
+		
+		<div style="height: 300px; width: 300px; border:1px solid red; display:inline; float:left">
+			<div style="height: 100%; width: 100%; border:1px solid black">
+				<canvas id="pie-chart" width="300" height="300"></canvas>
+			</div>			
+		</div>
+		
+		<button onclick="loadData()">
+				Load
+		</button>-->
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+        <script>
+//######################################### Bar_chart 
+        var data = {{ data_profil|safe }};
+
+        // Récupérer les catégories uniques de click_rate
+        var profils = [...new Set(data.map(item => item.type_feature))];
+
+        // Préparer les labels et les valeurs pour Chart.js
+        var labels = [];
+        var valuesYes = [];
+        var valuesNo = [];
+
+        // Parcourir chaque catégorie de click_rate
+        profils.forEach(type_feature => {
+            // Filtrer les données correspondant à cette catégorie de click_rate
+            var filteredData = data.filter(item => item.type_feature === type_feature);
+
+            // Récupérer les valeurs pour churn_status 'yes' et 'no'
+            var valueYes = filteredData.find(item => item.churn_status === 'Yes').value;
+            var valueNo = filteredData.find(item => item.churn_status === 'No').value;
+
+            // Ajouter les labels et les valeurs correspondantes
+            labels.push(type_feature);
+            valuesYes.push(valueYes);
+            valuesNo.push(valueNo);
+        });
+
+        // Créer le graphique avec Chart.js
+        var ctx = document.getElementById('myChart').getContext('2d');
+        var myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Yes',
+                    data: valuesYes,
+                    backgroundColor: '#0b6d94',
+                    borderColor: '#0b6d94',
+                    borderWidth: 1
+                }, {
+                    label: 'No',
+                    data: valuesNo,
+                    backgroundColor: '#c45850',
+                    borderColor: '#c45850',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                }
+            }
+        });
+
+
+//######################################################## line-chart
+        var data ={{ data_device|safe }};
+
+        // Récupérer les catégories uniques de click_rate
+        var devices = [...new Set(data.map(item => item.type_feature))];
+
+        // Préparer les labels et les valeurs pour Chart.js
+        var labels = [];
+        var valuesYes = [];
+        var valuesNo = [];
+
+        // Parcourir chaque catégorie de click_rate
+        devices.forEach(type_feature => {
+            // Filtrer les données correspondant à cette catégorie de click_rate
+            var filteredData = data.filter(item => item.type_feature === type_feature);
+
+            // Récupérer les valeurs pour churn_status 'yes' et 'no'
+            var valueYes = filteredData.find(item => item.churn_status === 'Yes').value;
+            var valueNo = filteredData.find(item => item.churn_status === 'No').value;
+
+            // Ajouter les labels et les valeurs correspondantes
+            labels.push(type_feature);
+            valuesYes.push(valueYes);
+            valuesNo.push(valueNo);
+        });
+
+        // Créer le graphique avec Chart.js
+        var ctx = document.getElementById('bar_chart_apareil').getContext('2d');
+        var myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Yes',
+                    data: valuesYes,
+                    backgroundColor: '#0b6d94',
+                    borderColor: '#0b6d94',
+                    borderWidth: 1
+                }, {
+                    label: 'No',
+                    data: valuesNo,
+                    backgroundColor: '#cdad59',
+                    borderColor: '#cdad59',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                }
+            }
+        });
+
+
+//########################################################## pie-chart
+        // Préparer les données pour le diagramme circulaire
+        var data3 = {{ data_product|safe }};
+
+        var aggregatedData = {};
+        data3.forEach(item => {
+            if (!aggregatedData[item.type_feature]) {
+                aggregatedData[item.type_feature] = { Yes: 0, No: 0 };
+            }
+            aggregatedData[item.type_feature][item.churn_status] += item.value;
+        });
+
+        var labels = Object.keys(aggregatedData);
+        var valuesYes = Object.values(aggregatedData).map(item => item.Yes);
+        var valuesNo = Object.values(aggregatedData).map(item => item.No);
+        var colors = {
+        'Internet': '#0b6d94',
+        'Mobile': '#c45850',
+        'Mobile, Internet': '#cdad59' // Couleur pour 'Mobile & Internet'
+    };
+
+        var backgroundColors = labels.map(label => colors[label]);
+
+        var ctx3 = document.getElementById('pie-chart').getContext('2d');
+        var myChart = new Chart(ctx3, {
+            type: 'pie',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Yes',
+                    data: valuesYes,
+                    backgroundColor: backgroundColors, // Utiliser les couleurs personnalisées
+                    borderColor: backgroundColors.map(color => color.replace('0.2', '1')), // Assombrir les bordures
+                    borderWidth: 1
+                }, {
+                    label: 'No',
+                    data: valuesNo,
+                    backgroundColor: backgroundColors, // Utiliser les couleurs personnalisées
+                    borderColor: backgroundColors.map(color => color.replace('0.2', '1')), // Assombrir les bordures
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        display: false
+                    }],
+                    xAxes: [{
+                        display: false
+                    }]
+                }
+            }
+        });
+//############################################################
+        var data = {{ data_canal|safe }};
+
+        // Récupérer les catégories uniques de click_rate
+        var channels = [...new Set(data.map(item => item.type_feature))];
+
+        // Préparer les labels et les valeurs pour Chart.js
+        var labels = [];
+        var valuesYes = [];
+        var valuesNo = [];
+
+        // Parcourir chaque catégorie de click_rate
+        channels.forEach(type_feature => {
+            // Filtrer les données correspondant à cette catégorie de click_rate
+            var filteredData = data.filter(item => item.type_feature === type_feature);
+
+            // Récupérer les valeurs pour churn_status 'yes' et 'no'
+            var valueYes = filteredData.find(item => item.churn_status === 'Yes').value;
+            var valueNo = filteredData.find(item => item.churn_status === 'No').value;
+
+            // Ajouter les labels et les valeurs correspondantes
+            labels.push(type_feature);
+            valuesYes.push(valueYes);
+            valuesNo.push(valueNo);
+        });
+
+        // Créer le graphique avec Chart.js
+        var ctx = document.getElementById('channel_bar').getContext('2d');
+        var myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Yes',
+                    data: valuesYes,
+                    backgroundColor: '#0b6d94',
+                    borderColor: '#0b6d94',
+                    borderWidth: 1
+                }, {
+                    label: 'No',
+                    data: valuesNo,
+                    backgroundColor: '#cdad59',
+                    borderColor: '#cdad59',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                }
+            }
+        });
+        //################################################## doughnut_chart
+
+        var data = {{ data_contract|safe }};
+
+        var aggregatedData = {};
+        data.forEach(item => {
+            if (!aggregatedData[item.type_feature]) {
+                aggregatedData[item.type_feature] = { Yes: 0, No: 0 };
+            }
+            aggregatedData[item.type_feature][item.churn_status] += item.value;
+        });
+
+        var labels = Object.keys(aggregatedData);
+        var valuesYes = Object.values(aggregatedData).map(item => item.Yes);
+        var valuesNo = Object.values(aggregatedData).map(item => item.No);
+        var colors = {
+        'Postpaid': '#0b6d94',
+        'Prepaid': '#c45850',
+    };
+
+        var backgroundColors = labels.map(label => colors[label]);
+        var ctx = document.getElementById('doughnut_chart').getContext('2d');
+        var myChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Yes',
+                    data: valuesYes,
+                    backgroundColor: backgroundColors, // Utiliser les couleurs personnalisées
+                    borderColor: backgroundColors.map(color => color.replace('0.2', '1')), // Assombrir les bordures
+                    borderWidth: 1
+                }, {
+                    label: 'No',
+                    data: valuesNo,
+                    backgroundColor: backgroundColors, // Utiliser les couleurs personnalisées
+                    borderColor: backgroundColors.map(color => color.replace('0.2', '1')), // Assombrir les bordures
+                    borderWidth: 1
+            }]},
+            options: {
+                scales: {
+                    yAxes: [{
+                        display: false
+                    }],
+                    xAxes: [{
+                        display: false
+                    }]
+                }
+            }
+        });
+
+
+
+
+//###############################income level
+
+var data = {{ data_incomeL|safe }};
+
+        // Récupérer les catégories uniques de click_rate
+        var incomes = [...new Set(data.map(item => item.type_feature))];
+
+        // Préparer les labels et les valeurs pour Chart.js
+        var labels = [];
+        var valuesYes = [];
+        var valuesNo = [];
+
+        // Parcourir chaque catégorie de click_rate
+        incomes.forEach(type_feature => {
+            // Filtrer les données correspondant à cette catégorie de click_rate
+            var filteredData = data.filter(item => item.type_feature === type_feature);
+
+            // Récupérer les valeurs pour churn_status 'yes' et 'no'
+            var valueYes = filteredData.find(item => item.churn_status === 'Yes').value;
+            var valueNo = filteredData.find(item => item.churn_status === 'No').value;
+
+            // Ajouter les labels et les valeurs correspondantes
+            labels.push(type_feature);
+            valuesYes.push(valueYes);
+            valuesNo.push(valueNo);
+        });
+
+        // Créer le graphique avec Chart.js
+        var ctx = document.getElementById('income_level_chart').getContext('2d');
+        var myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Yes',
+                    data: valuesYes,
+                    backgroundColor: '#0b6d94',
+                    borderColor: '#0b6d94',
+                    borderWidth: 1
+                }, {
+                    label: 'No',
+                    data: valuesNo,
+                    backgroundColor: '#cdad59',
+                    borderColor: '#cdad59',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                }
+            }
+        });
+        
+//################################### 
+
+// Préparer les données pour le diagramme circulaire
+var data = {{ data_gender|safe }};
+
+        var aggregatedData = {};
+        data.forEach(item => {
+            if (!aggregatedData[item.type_feature]) {
+                aggregatedData[item.type_feature] = { Yes: 0, No: 0 };
+            }
+            aggregatedData[item.type_feature][item.churn_status] += item.value;
+        });
+
+        var labels = Object.keys(aggregatedData);
+        var valuesYes = Object.values(aggregatedData).map(item => item.Yes);
+        var valuesNo = Object.values(aggregatedData).map(item => item.No);
+        var colors = {
+        'Female': '#0b6d94',
+        'Male': '#cdad59',
+    };
+
+        var backgroundColors = labels.map(label => colors[label]);
+        var ctx3 = document.getElementById('gender_pie_chart').getContext('2d');
+        var myChart = new Chart(ctx3, {
+            type: 'pie',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Yes',
+                    data: valuesYes,
+                    backgroundColor: backgroundColors, // Utiliser les couleurs personnalisées
+                    borderColor: backgroundColors.map(color => color.replace('0.2', '1')), // Assombrir les bordures
+                    borderWidth: 1
+                }, {
+                    label: 'No',
+                    data: valuesNo,
+                    backgroundColor: backgroundColors, // Utiliser les couleurs personnalisées
+                    borderColor: backgroundColors.map(color => color.replace('0.2', '1')), // Assombrir les bordures
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        display: false
+                    }],
+                    xAxes: [{
+                        display: false
+                    }]
+                }
+            }
+        });
+        </script>
+	</body>
+</html>
