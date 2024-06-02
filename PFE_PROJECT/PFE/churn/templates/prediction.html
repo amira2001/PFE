@@ -1,0 +1,478 @@
+<!doctype html>
+<html>
+	<head>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+        <style>
+        body{
+            margin:0px;
+            padding: 0px;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .grid-container {
+        overflow-x: hidden !important;
+        display: grid;
+        grid-template-columns:220px 1fr;
+        grid-template-rows: 50px 1fr 50px;
+        grid-template-areas:
+            "sidenav header"
+            "sidenav main"
+            "sidenav footer";
+        height: 100vh; 
+        }
+
+        .header {
+        grid-area: header;
+        background-color:white;
+        }
+
+        .sidenav {
+        width: 130%;
+        grid-area: sidenav;
+        color: white;
+        height: 100%;
+        position: fixed;
+        background: linear-gradient(to bottom, white, #ee9d9d);
+        }
+
+        /* Cards */
+        .main {
+        margin-left: 67px;
+        padding:20px;
+        grid-area: main;
+        position:relative;
+        }
+
+        #card1 {
+        grid-column-start: 1;
+        grid-column-end: 2;
+        }
+
+        #card2 {
+        grid-column-start: 2;
+        grid-column-end: 3;
+        
+        grid-row-start: 1;
+        grid-row-end: 3;
+        }
+
+        #card3 {
+        grid-row-start: 2;
+        grid-row-end: 5;
+        }
+
+        #card4 {
+        grid-row-start: 3;
+        grid-row-end: 5;
+        }
+        #card5 {
+        grid-row-start: 5;
+        grid-row-end: 7;
+        }
+        #card6 {
+        grid-row-start: 5;
+        grid-row-end: 7;
+        }
+        #card7 {
+        grid-row-start: 7;
+        grid-row-end: 8;
+        }
+        #card8 {
+        grid-row-start: 7;
+        grid-row-end: 8;
+        }
+        .card-content{
+            padding: 30px;
+        }
+
+        .card-header{
+            background-color:#f0f0f0;
+            height: 40px;
+            border-radius: 5px 5px 0 0;
+            
+        }
+
+        .card-header p{
+            margin: 0px;
+            padding:0px;
+            position:relative;
+            top:12px;
+            left:12px;
+            color:black;
+            font-weight: bold;
+            font-size: larger;
+        }
+        .card {
+        border-radius: 5px;
+        background-color:white;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+        transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+        }
+
+        .card:hover{
+        box-shadow: 0 2px 4px rgba(0,0,0,0.25), 0 2px 2px rgba(0,0,0,0.22);
+        }
+
+
+        /* Big Numbers */
+
+        #cardTable {
+            padding: 10px;
+        }
+        .bigNumber{
+            //border: 1px solid black;
+            border-radius: 10px;
+            height:587px;
+            width:95%;
+            margin-left: 10px;
+            margin-top : -20px;
+            padding : 20px;
+            //background-color:#3e95cd;
+            box-shadow: 0 3px 3px rgba(0,0,0,0.2), 0 1px 2px rgba(0,0,0,0.6);
+        }
+
+        .bigNumber .regionLabel{
+            margin-top:20px;
+            margin-bottom:0px;
+            text-align:center;
+            color:white;
+            font-size: 13pt;
+            font-family: Consolas, Helvetica, sans-serif;	
+        }
+
+        .bigNumber .regionPop{
+            margin:0px;
+            text-align:center;
+            color:white;
+            font-family: Calibri, Helvetica, sans-serif;
+            font-size: 21pt;
+        }
+
+        #region1{
+            background-color:#fffbfb;
+        }
+
+        #region2{
+            background-color:#ebd088;
+        }
+
+
+        /* Etape 10 */
+
+        #menu{
+            margin-top:60px;
+            display: flex;
+            flex-direction: column;	
+            max-width: 300px !important;
+        }
+
+
+        #menu div{
+            border-bottom:1px solid rgb(231, 224, 224);
+            background-color:white;;
+            //height:40px;
+            //padding:0px;
+            //margin-bottom:1px;
+            box-shadow: 0 3px 3px rgba(0,0,0,0.2), 0 1px 2px rgba(0,0,0,0.6);
+            transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+        }
+
+        #menu div:hover{
+        opacity:95%;
+        box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+        cursor: pointer;
+        background-color:#830606;
+        }
+
+        #menu div p{	
+            background-color:#df2b2b;
+            font-family:'Times New Roman', Times, serif;
+            padding:9px;
+            //margin: 0px;
+            margin-top:0px;
+            margin-bottom:0px;
+            margin-left:8px;
+            color: white;
+            font-size:16pt;
+        }
+
+        #logo{
+            display:flex;
+            }
+
+        #logo *{
+            padding:5px;
+        }
+
+        #logo p{
+            color:#bb0b0b;
+            font-weight:bold;
+            font-size:16pt;
+            padding:5px 0 0 90px;
+            margin:12px 0 0 10px;
+        }
+
+        #dash-title{
+            margin:0px;
+            color:#df2b2b;
+            position: relative;
+            top:15px;
+            left:84px;
+            font-size: 13pt;
+        }
+
+
+        button{
+            height:32px; 
+            cursor:pointer;				
+            border:0px; 
+            color:white;
+            font-weight: bold; 
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+            transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+            font-size: 11pt;
+            
+        }
+
+
+        button:hover{
+            opacity:95%;
+        box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+        }	
+
+        button:active{
+            opacity:70%;
+            box-shadow: 2px 3px 6px 1px rgba(0,0,0,0.3);
+            background-color:#648ca6
+        }	
+
+        #btn_refresh{
+            background-color:#df2b2b;
+            position:absolute;
+            top:8px;
+            right:20px;
+            width:100px;
+        }
+        img{
+            width:182px;
+        }
+        a{
+            text-decoration: none;
+        }
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+        .form-row div {
+            flex: 1;
+            margin-right: 10px;
+        }
+        .form-row div:last-child {
+            margin-right: 0;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"], input[type="number"], input[type="date"], select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+        button {
+            background-color: #df2b2b;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #df2b2b;
+        }
+
+        .notification {
+        min-width: 250px;
+        margin-left: -125px;
+        background-color: #df2b2b;
+        color: #fff;
+        text-align: center;
+        border-radius: 2px;
+        padding: 16px;
+        position: fixed;
+        z-index: 1;
+        left: 50%;
+        bottom: 30px;
+        font-size: 17px;
+    }
+
+        .notification.show {
+            visibility: visible;
+            -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+            animation: fadein 0.5s, fadeout 0.5s 2.5s;
+        }
+
+        @-webkit-keyframes fadein {
+            from {bottom: 0; opacity: 0;}
+            to {bottom: 30px; opacity: 1;}
+        }
+
+        @keyframes fadein {
+            from {bottom: 0; opacity: 0;}
+            to {bottom: 30px; opacity: 1;}
+        }
+
+        @-webkit-keyframes fadeout {
+            from {bottom: 30px; opacity: 1;}
+            to {bottom: 0; opacity: 0;}
+        }
+
+        @keyframes fadeout {
+            from {bottom: 30px; opacity: 1;}
+            to {bottom: 0; opacity: 0;}
+        }
+
+        </style>
+        {% load static %}
+    </head>
+	<body>
+		<div class="grid-container">
+		  <header class="header">
+			<p id="dash-title">
+				Dashboard Big Data v 1.0.0 2021
+			</p>
+			<button id="btn_refresh" onclick="loadData()">
+				DJEZZY
+			</button>
+		  </header>
+		  <aside class="sidenav">		
+			<div id="logo">
+                <img src="{% static 'images/logo.png' %}">
+				
+			</div>			
+			<div id="menu">
+				<div><a href="{% url 'Dashboard' %}"><p>Analyse exploratoire</p></a></div>
+				<div><a href="{% url 'analyseChurn' %}"><p>Analyse de churn</p></a></div>
+				<div><a href="{% url 'Predict' %}"><p>Prédire le churn </p></a></div>
+				<div><a href="{% url 'logout' %}"><p>Déconnexion</p></a></div>
+			</div>		
+		  </aside>
+		  <main class="main">
+			<div class="card-content" id="cardTable">	
+                
+                <div class="bigNumber" id="region1">
+                    <h1>Prediction Form</h1>
+                    {% if prediction %}
+                        <div class="notification" id="notification">  
+                            Prediction Result: {{ prediction }}
+                        </div>
+                    {% endif %}
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="form-row">
+                            <div>
+                                {{ form.choice_field_Click_Rate.label_tag }}<br>
+                                {{ form.choice_field_Click_Rate }}
+                            </div>
+                            <div>
+                                {{ form.choice_field_Products_Purchased.label_tag }}<br>
+                                {{ form.choice_field_Products_Purchased }}
+                            </div>
+                            <div>
+                                {{ form.choice_field_Profile.label_tag }}<br>
+                                {{ form.choice_field_Profile }}
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div>
+                                {{ form.choice_field_Gender.label_tag }}<br>
+                                {{ form.choice_field_Gender }}
+                            </div>
+                            <div>
+                                {{ form.choice_field_Contract_Type.label_tag }}<br>
+                                {{ form.choice_field_Contract_Type }}
+                            </div>
+                            <div>
+                                {{ form.age.label_tag }}<br>
+                                {{ form.age }}
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div>
+                                {{ form.choice_field_Income_Level.label_tag }}<br>
+                                {{ form.choice_field_Income_Level }}
+                            </div>
+                            <div>
+                                {{ form.choice_field_Device_Type.label_tag }}<br>
+                                {{ form.choice_field_Device_Type }}
+                            </div>
+                            <div>
+                                {{ form.choice_field_Plan_Type.label_tag }}<br>
+                                {{ form.choice_field_Plan_Type }}
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div>
+                                {{ form.choice_field_Avg_Monthly_Spend.label_tag }}<br>
+                                {{ form.choice_field_Avg_Monthly_Spend }}
+                            </div>
+                            <div>
+                                {{ form.choice_Preferred_Communication_Channel.label_tag }}<br>
+                                {{ form.choice_Preferred_Communication_Channel }}
+                            </div>
+                            <div>
+                                {{ form.contract_start_date.label_tag }}<br>
+                                {{ form.contract_start_date }}
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div>
+                                {{ form.choice_field_Customer_Satisfaction_Score.label_tag }}<br>
+                                {{ form.choice_field_Customer_Satisfaction_Score }}
+                            </div>
+                            <div>
+                                {{ form.wilaya.label_tag }}<br>
+                                {{ form.wilaya }}
+                            </div>
+                            <div>
+                                {{ form.choice_field_Occupation.label_tag }}<br>
+                                {{ form.choice_field_Occupation }}
+                            </div>
+                        </div>
+                        <div>
+                            <button type="submit">Predict</button>
+                        </div>
+                    </form>
+                </div>
+                
+            </div>
+		  </main>
+		  <footer class="footer"></footer>
+		</div>
+    <script>
+        function showNotification(message) {
+            var notification = document.getElementById("notification");
+            var messageSpan = document.getElementById("notification-message");
+            messageSpan.textContent = message;
+            notification.className = "notification show";
+            setTimeout(function() {
+                notification.className = notification.className.replace("show", "");
+            }, 3000);
+        }
+    
+        // If there is a prediction message, show the notification
+        {% if prediction %}
+            showNotification("Prediction Result: {{ prediction }});
+        {% endif %}
+    </script>
+	</body>
+    
+</html>
