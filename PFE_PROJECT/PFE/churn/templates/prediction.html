@@ -369,10 +369,10 @@
 			<div class="card-content" id="cardTable">	
                 
                 <div class="bigNumber" id="region1">
-                    <h1>Prediction Form</h1>
+                    <h1>Formulaire de prédiction</h1>
                     {% if prediction %}
                         <div class="notification" id="notification">  
-                            Prediction Result: {{ prediction }}
+                            Resultat de la prédiction : {{ prediction }} {{text}}
                         </div>
                     {% endif %}
                     <form method="post">
@@ -448,7 +448,7 @@
                             </div>
                         </div>
                         <div>
-                            <button type="submit">Predict</button>
+                            <button type="submit">prédire</button>
                         </div>
                     </form>
                 </div>

@@ -8,7 +8,7 @@ from .forms import PredictionForm
 from django.views.decorators.csrf import csrf_exempt
 from sklearn.preprocessing import LabelEncoder, OneHotEncoder,OrdinalEncoder,StandardScaler
 import pickle
-
+import polars as pl 
 # Create your views here.
 
 
@@ -17,7 +17,8 @@ def Dashboard(request):
     excel_path = os.path.join(settings.BASE_DIR, 'churn/static/files/customer_data_algeria.xlsx')
     
     # Lire le fichier Excel avec pandas
-    df = pd.read_excel(excel_path)
+    df = pl.read_excel(excel_path)
+    df = pd.DataFrame(df.to_dicts())
     # Convertir le DataFrame en liste de dictionnaires
     data_size = df.shape[0]
     top_produit = df['Products Purchased'].value_counts().idxmax()
@@ -214,6 +215,52 @@ def transforme(cust):
 
 
 @csrf_exempt
+def Predict1(request):
+    if request.method == 'POST':
+            form = PredictionForm(request.POST)
+            if form.is_valid():
+                # Traiter les données du formulaire ici
+                click_rate = form.cleaned_data['choice_field_Click_Rate']
+                products_purchased = form.cleaned_data['choice_field_Products_Purchased']
+                profile = form.cleaned_data['choice_field_Profile']
+                gender = form.cleaned_data['choice_field_Gender']
+                contract_type = form.cleaned_data['choice_field_Contract_Type']
+                age = form.cleaned_data['age']
+                income_level = form.cleaned_data['choice_field_Income_Level']
+                device_type = form.cleaned_data['choice_field_Device_Type']
+                plan_type = form.cleaned_data['choice_field_Plan_Type']
+                avg__monthly_spend = form.cleaned_data['choice_field_Avg_Monthly_Spend']
+                preferred_communication_channel = form.cleaned_data['choice_Preferred_Communication_Channel']
+                contract_start_date = form.cleaned_data['contract_start_date']
+                customer_satisfaction_score = form.cleaned_data['choice_field_Customer_Satisfaction_Score']
+                location = form.cleaned_data['wilaya']
+                occupation = form.cleaned_data['choice_field_Occupation']
+                cust = {'click_rate':click_rate,'products_purchased':products_purchased,'profile':profile,'gender':gender,'contract_type':contract_type,'age':age,'location':location,'income_level':income_level,
+                'device_type': device_type,'plan_type':plan_type,'avg__monthly_spend':avg__monthly_spend,'preferred_communication_channel':preferred_communication_channel,'contract_start_date':contract_start_date,
+                'customer_satisfaction_score':customer_satisfaction_score,'occupation':occupation}
+                														
+                cust = transforme(cust)
+                # Faites quelque chose avec les données du formulaire (par exemple, sauvegardez-les dans la base de données ou effectuez une analyse)
+                print(cust.T)				
+                modele_path = os.path.join(settings.BASE_DIR, 'churn/static/files/final_model.sav')
+                with open(modele_path, 'rb') as file:
+                   modele = pickle.load(file)
+                
+                prediction = modele.predict(cust) + 1 
+                profils_churn = [1, 3, 4]
+                profils_non_churn = [2, 5, 7]
+                text = "profil mixte"
+                if prediction in profils_churn :
+                     text = "profil churn"
+                if prediction in profils_non_churn :
+                     text = "profil non churn"
+                return render(request, 'prediction.html', {'form': form,'prediction':prediction[0],'text':text})
+    else:
+            form = PredictionForm()
+    
+    return render(request, 'prediction.html', {'form': form})
+
+
 def Predict(request):
     if request.method == 'POST':
             form = PredictionForm(request.POST)
@@ -246,12 +293,18 @@ def Predict(request):
                    modele = pickle.load(file)
                 
                 prediction = modele.predict(cust) + 1 
-                return render(request, 'prediction.html', {'form': form,'prediction':prediction[0]})
+                profils_churn = [1, 3, 4]
+                profils_non_churn = [2, 5, 7]
+                text = "profil mixte"
+                if prediction in profils_churn :
+                     text = "profil churn"
+                if prediction in profils_non_churn :
+                     text = "profil non churn"
+                return render(request, 'prediction.html', {'form': form,'prediction':prediction[0],'text':text})
     else:
             form = PredictionForm()
     
     return render(request, 'prediction.html', {'form': form})
-
 def user_logout(request):
     logout(request)
     # Rediriger l'utilisateur vers une page appropriée (par exemple, la page d'accueil)
