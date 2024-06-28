@@ -9,6 +9,7 @@ from django.views.decorators.csrf import csrf_exempt
 from sklearn.preprocessing import LabelEncoder, OneHotEncoder,OrdinalEncoder,StandardScaler
 import pickle
 import polars as pl 
+from .prediction_model import Model
 # Create your views here.
 
 
@@ -127,7 +128,8 @@ def analyseChurn(request):
 
 # views.py
 
-    
+
+
 def transforme(cust):
     print(cust)
     df = pd.DataFrame(cust,index=[0])
@@ -193,74 +195,29 @@ def transforme(cust):
     from datetime import datetime
     # Convertir la colonne de dates en format de date approprié
     df['contract_start_date'] = pd.to_datetime(df['contract_start_date'])
-    end_of_2023 = datetime(2024, 5, 31)
+    end_of_2023 = datetime(2023, 12, 31)
 
     # Calcul de la durée de la relation client jusqu'à la fin de décembre 2023
     df['contract_start_date'] = (end_of_2023 - df['contract_start_date']).dt.days
     df['customer_satisfaction_score'] = df['customer_satisfaction_score'].str.split('/').str[0].astype(int)
 
-    numerical =['age','avg__monthly_spend','contract_start_date','click_rate','products_purchased','location','income_level','device_type','preferred_communication_channel','customer_satisfaction_score','occupation']
+    to_scale =['age','avg__monthly_spend','contract_start_date','click_rate','products_purchased','location','income_level','device_type','preferred_communication_channel','customer_satisfaction_score','occupation']
     
-
-    scaler_path = os.path.join(settings.BASE_DIR, 'churn/static/files/scaler2.pkl')
+    '''scaler_path = os.path.join(settings.BASE_DIR, 'churn/static/files/scaler2.pkl')
     with open(scaler_path, 'rb') as file:
         scaler = pickle.load(file)
-    print(scaler.mean_[0],scaler.var_[0],(df['click_rate'].loc[0]-scaler.mean_[0])/scaler.var_[0])
-    print(df[numerical].T)
-    print(df[numerical].dtypes)
-    print(df[numerical].values)
-    df[numerical] = scaler.transform(df[numerical].values)    
+    df[to_scale] = scaler.transform(df[to_scale].values) '''  
     return df 
-    
+
+
+
+modele_path = os.path.join(settings.BASE_DIR, 'churn/static/files/final_model.sav')
+with open(modele_path, 'rb') as file:
+    model = pickle.load(file)    
+    model = Model()
 
 
 @csrf_exempt
-def Predict1(request):
-    if request.method == 'POST':
-            form = PredictionForm(request.POST)
-            if form.is_valid():
-                # Traiter les données du formulaire ici
-                click_rate = form.cleaned_data['choice_field_Click_Rate']
-                products_purchased = form.cleaned_data['choice_field_Products_Purchased']
-                profile = form.cleaned_data['choice_field_Profile']
-                gender = form.cleaned_data['choice_field_Gender']
-                contract_type = form.cleaned_data['choice_field_Contract_Type']
-                age = form.cleaned_data['age']
-                income_level = form.cleaned_data['choice_field_Income_Level']
-                device_type = form.cleaned_data['choice_field_Device_Type']
-                plan_type = form.cleaned_data['choice_field_Plan_Type']
-                avg__monthly_spend = form.cleaned_data['choice_field_Avg_Monthly_Spend']
-                preferred_communication_channel = form.cleaned_data['choice_Preferred_Communication_Channel']
-                contract_start_date = form.cleaned_data['contract_start_date']
-                customer_satisfaction_score = form.cleaned_data['choice_field_Customer_Satisfaction_Score']
-                location = form.cleaned_data['wilaya']
-                occupation = form.cleaned_data['choice_field_Occupation']
-                cust = {'click_rate':click_rate,'products_purchased':products_purchased,'profile':profile,'gender':gender,'contract_type':contract_type,'age':age,'location':location,'income_level':income_level,
-                'device_type': device_type,'plan_type':plan_type,'avg__monthly_spend':avg__monthly_spend,'preferred_communication_channel':preferred_communication_channel,'contract_start_date':contract_start_date,
-                'customer_satisfaction_score':customer_satisfaction_score,'occupation':occupation}
-                														
-                cust = transforme(cust)
-                # Faites quelque chose avec les données du formulaire (par exemple, sauvegardez-les dans la base de données ou effectuez une analyse)
-                print(cust.T)				
-                modele_path = os.path.join(settings.BASE_DIR, 'churn/static/files/final_model.sav')
-                with open(modele_path, 'rb') as file:
-                   modele = pickle.load(file)
-                
-                prediction = modele.predict(cust) + 1 
-                profils_churn = [1, 3, 4]
-                profils_non_churn = [2, 5, 7]
-                text = "profil mixte"
-                if prediction in profils_churn :
-                     text = "profil churn"
-                if prediction in profils_non_churn :
-                     text = "profil non churn"
-                return render(request, 'prediction.html', {'form': form,'prediction':prediction[0],'text':text})
-    else:
-            form = PredictionForm()
-    
-    return render(request, 'prediction.html', {'form': form})
-
-
 def Predict(request):
     if request.method == 'POST':
             form = PredictionForm(request.POST)
@@ -281,18 +238,15 @@ def Predict(request):
                 customer_satisfaction_score = form.cleaned_data['choice_field_Customer_Satisfaction_Score']
                 location = form.cleaned_data['wilaya']
                 occupation = form.cleaned_data['choice_field_Occupation']
+                
                 cust = {'click_rate':click_rate,'products_purchased':products_purchased,'profile':profile,'gender':gender,'contract_type':contract_type,'age':age,'location':location,'income_level':income_level,
                 'device_type': device_type,'plan_type':plan_type,'avg__monthly_spend':avg__monthly_spend,'preferred_communication_channel':preferred_communication_channel,'contract_start_date':contract_start_date,
                 'customer_satisfaction_score':customer_satisfaction_score,'occupation':occupation}
                 														
                 cust = transforme(cust)
-                # Faites quelque chose avec les données du formulaire (par exemple, sauvegardez-les dans la base de données ou effectuez une analyse)
-                print(cust.T)				
-                modele_path = os.path.join(settings.BASE_DIR, 'churn/static/files/final_model.sav')
-                with open(modele_path, 'rb') as file:
-                   modele = pickle.load(file)
-                
-                prediction = modele.predict(cust) + 1 
+
+                prediction = model.predict(cust) + 1
+
                 profils_churn = [1, 3, 4]
                 profils_non_churn = [2, 5, 7]
                 text = "profil mixte"
@@ -300,11 +254,15 @@ def Predict(request):
                      text = "profil churn"
                 if prediction in profils_non_churn :
                      text = "profil non churn"
-                return render(request, 'prediction.html', {'form': form,'prediction':prediction[0],'text':text})
+                return render(request, 'prediction.html', {'form': form,'prediction':prediction,'text':text})
     else:
             form = PredictionForm()
     
     return render(request, 'prediction.html', {'form': form})
+
+
+
+
 def user_logout(request):
     logout(request)
     # Rediriger l'utilisateur vers une page appropriée (par exemple, la page d'accueil)
